@@ -1,7 +1,7 @@
 import pytest
 
 import configs
-from pageobjects.web.start_page import StartPage
+from pageobjects.web.start_page_element import StartPage
 
 
 @pytest.fixture

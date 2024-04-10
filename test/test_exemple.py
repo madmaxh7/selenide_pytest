@@ -1,13 +1,14 @@
 import pytest
-from base_web_page import BasePage
-from pageobjects.web.start_page import StartPage
+
+from base_object import BaseObject
+from pageobjects.web.start_page_element import StartPage
 
 pytestmark = [pytest.mark.webdriver,
               pytest.mark.usefixtures("driver_init", "open_home_page")]
 
 
-class TestStartPage(BasePage):
+class TestSmoke(BaseObject):
 
     def test_select_en_language(self):
-        wiki_page = StartPage()
-        wiki_page.select_language()
+        wiki_start_page = StartPage()
+        wiki_start_page.language_select.select_en_language.wait_for_present()

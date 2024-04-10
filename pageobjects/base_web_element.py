@@ -175,7 +175,7 @@ class BaseElement(BaseObject):
 
     def verify_attribute_contains(self, attr_name, value, get_err=False):
         with allure.step(f"Verify: attribute {attr_name} in element {type(self).__name__} is '{value}'"):
-            self.wait_for_present(5)
+            self.wait_for_present()
             cur_attr = str(self.get_attribute(attr_name))
             err = (f"Current attribute '{attr_name}' in element {type(self).__name__} value"
                    f"'{cur_attr}' does not match expected '{value}'")
