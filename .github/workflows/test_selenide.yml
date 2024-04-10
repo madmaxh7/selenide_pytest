@@ -31,12 +31,13 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt  # Assuming you have a requirements.txt file with Selenide and other dependencies
+        pip install -r requirements.txt
 
     - name: Install ChromeDriver
       run: |
-        LATEST=$(wget -q -O - https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-        wget -q "https://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip"
+        CHROME_VERSION=$(google-chrome --version | cut -d' ' -f3 | cut -d'.' -f1)
+        CHROMEDRIVER_VERSION=$(wget -q -O - https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+        wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
         unzip chromedriver_linux64.zip
         chmod +x chromedriver
         sudo mv chromedriver /usr/local/bin/
@@ -49,4 +50,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: test-results
-        path: $GITHUB_WORKSPACE/results/allure-report  # Change this path to match your test results directory
+        path: $GITHUB_WORKSPACE/results/allure-report
