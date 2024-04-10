@@ -2,3 +2,4 @@
 
 USERNAME = "Test account 256382"
 PASSWORD = "Test123!"
+ENV = "TEST"
