@@ -10,11 +10,12 @@ pytestmark = [pytest.mark.webdriver,
 
 
 class TestStartPage(BasePage):
-
+    @pytest.mark.gui_tests
     def test_select_en_language(self):
         wiki_page = StartPage()
         wiki_page.select_en_language_sp()
 
+    @pytest.mark.gui_tests
     def test_login_form_loading(self):
         wiki_start_page = StartPage()
         wiki_home_page = HomePageEn()
