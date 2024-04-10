@@ -14,7 +14,7 @@ class WebDriverWrapper:
         self.driver = self.browser.config.driver
 
     def connect(self):
-        """Starting Webdriver"""
+        """Starting WebDriver"""
         if configs.web_driver_platform == 'chrome':
             options = webdriver.ChromeOptions()
             options.add_argument("--no-sandbox")
@@ -30,14 +30,14 @@ class WebDriverWrapper:
             options.add_argument("--disable-setuid-sandbox")
         else:
             self.driver.quit()
-            raise Exception("Unsupported webdriver platform platform %s" % configs.web_driver_platform)
+            raise Exception("Unsupported webdriver platform %s" % configs.web_driver_platform)
 
     def disconnect(self):
-        """Stop Webdriver"""
+        """Stop WebDriver"""
         self.driver.quit()
 
     def open_url(self, url):
-        """Open url"""
+        """Open URL"""
         self.browser.open(url)
 
     def refresh(self):
@@ -58,10 +58,10 @@ class WebDriverWrapper:
         """Switches focus to the specified frame"""
         self.driver.switch_to.frame(self.get_element(frame_loc))
 
-    def split_loc(self, loc):
+    @staticmethod
+    def split_loc(loc):
         """Split locator"""
-        str_by = loc[:loc.find('=')]
-        str_value = loc[loc.find('=') + 1:]
+        str_by, str_value = loc.split('=', 1)
         if str_by == "id":
             return by.id(str_value)
         elif str_by == "css":
@@ -100,7 +100,7 @@ class WebDriverWrapper:
         return self.get_element(loc).rect
 
     def get_attribute(self, loc, attr_name):
-        """Get a element attribute"""
+        """Get an element attribute"""
         return self.get_element(loc).get_attribute(attr_name)
 
 
