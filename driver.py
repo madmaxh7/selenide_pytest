@@ -1,19 +1,20 @@
+"""Webdriver"""
 import allure
 from selene import browser
 from selene import by
 from selenium import webdriver
-from selenium.webdriver import ActionChains
 
 import configs
 
 
-class WebDriverWrapper(object):
+class WebDriverWrapper:
 
     def __init__(self):
         self.driver = browser.config.driver
         self.browser = browser
 
     def connect(self):
+        """Starting Webdriver"""
         if configs.web_driver_platform == 'chrome':
             options = webdriver.ChromeOptions()
             options.add_argument("--no-sandbox")
@@ -32,29 +33,33 @@ class WebDriverWrapper(object):
             raise Exception("Unsupported webdriver platform platform %s" % configs.web_driver_platform)
 
     def disconnect(self):
+        """Stop Webdriver"""
         self.driver.quit()
 
     def open_url(self, url):
+        """Open url"""
         self.browser.open(url)
 
     def refresh(self):
+        """Refresh current page"""
         self.driver.refresh()
 
     @allure.step("Execute script")
     def execute_script(self, script, *args):
+        """Executes JavaScript in the current window/frame"""
         return self.driver.execute_script(script, *args)
 
     @property
     def window_size(self):
+        """Gets the width and height of the current window."""
         return self.driver.get_window_size()
 
     def switch_to_frame(self, frame_loc):
+        """Switches focus to the specified frame"""
         self.driver.switch_to.frame(self.get_element(frame_loc))
 
-    def switch_to_dc(self):
-        self.driver.switch_to.default_content()
-
     def split_loc(self, loc):
+        """Split locator"""
         str_by = loc[:loc.find('=')]
         str_value = loc[loc.find('=') + 1:]
         if str_by == "id":
@@ -65,29 +70,37 @@ class WebDriverWrapper(object):
             return by.xpath(loc)
 
     def get_element(self, loc):
-        be, value = self.split_loc(loc)
-        return self.driver.find_element(be, value)
+        """Find an element given a By strategy and locator"""
+        be_in, value = self.split_loc(loc)
+        return self.driver.find_element(be_in, value)
 
     def get_elements(self, loc):
-        be, value = self.split_loc(loc)
-        return self.driver.find_elements(be, value)
+        """Find an elements given a By strategy and locator"""
+        be_in, value = self.split_loc(loc)
+        return self.driver.find_elements(be_in, value)
 
     def get_element_id(self, loc):
+        """Get an element id"""
         return self.get_element(loc).id
 
     def click(self, loc):
+        """Click an element"""
         self.get_element(loc).click()
 
     def send_keys(self, loc, val):
+        """Send text in element"""
         self.get_element(loc).send_keys(val)
 
     def clear(self, loc):
+        """Clear field"""
         self.get_element(loc).clear()
 
     def get_rect(self, loc):
+        """A dictionary with the size and location of the element."""
         return self.get_element(loc).rect
 
     def get_attribute(self, loc, attr_name):
+        """Get a element attribute"""
         return self.get_element(loc).get_attribute(attr_name)
 
 
