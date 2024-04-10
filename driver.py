@@ -29,7 +29,7 @@ class WebDriverWrapper(object):
             options.add_argument("--disable-setuid-sandbox")
         else:
             self.driver.quit()
-            raise Exception("Unsupported webdriver_platform platform %s" % configs.web_driver_platform)
+            raise Exception("Unsupported webdriver platform platform %s" % configs.web_driver_platform)
 
     def disconnect(self):
         self.driver.quit()
@@ -78,26 +78,11 @@ class WebDriverWrapper(object):
     def click(self, loc):
         self.get_element(loc).click()
 
-    def double_click(self, loc):
-        ac = ActionChains(self.driver)
-        ac.double_click(self.get_element(loc)).perform()
-
     def send_keys(self, loc, val):
         self.get_element(loc).send_keys(val)
 
-    def send_keys_ac(self, *val):
-        ac = ActionChains(self.driver)
-        ac.send_keys(*val).perform()
-
     def clear(self, loc):
         self.get_element(loc).clear()
-
-    def mouse_over(self, loc):
-        ac = ActionChains(self.driver)
-        ac.move_to_element(self.get_element(loc)).perform()
-
-    def get_text(self, loc):
-        return self.get_element(loc).text
 
     def get_rect(self, loc):
         return self.get_element(loc).rect
