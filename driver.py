@@ -10,8 +10,8 @@ import configs
 class WebDriverWrapper:
 
     def __init__(self):
-        self.driver = browser.config.driver
         self.browser = browser
+        self.driver = self.browser.config.driver
 
     def connect(self):
         """Starting Webdriver"""

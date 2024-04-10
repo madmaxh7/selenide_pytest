@@ -2,14 +2,15 @@
 Conftest file
 """
 import pytest
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+
 import driver
 
 
 @pytest.fixture(scope="function", autouse=False)
 def driver_init(request):
-    if 'webdriver' in request.keywords:
-        driver.selen_id.connect()
-        yield
-        driver.selen_id.disconnect()
-    else:
-        yield
+    driver.selen_id.connect()
+
+    yield
+    driver.selen_id.disconnect()

@@ -3,8 +3,7 @@ import pytest
 from base_object import BaseObject
 from pageobjects.web.start_page_element import StartPage
 
-pytestmark = [pytest.mark.webdriver,
-              pytest.mark.usefixtures("driver_init", "open_home_page")]
+pytestmark = [pytest.mark.usefixtures("driver_init", "open_home_page")]
 
 
 class TestSmoke(BaseObject):
