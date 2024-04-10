@@ -35,11 +35,17 @@ jobs:
 
     - name: Install ChromeDriver
       run: |
+        echo "Downloading ChromeDriver..."
         CHROME_VERSION=$(google-chrome --version | cut -d' ' -f3 | cut -d'.' -f1)
+        echo "Detected Chrome version: $CHROME_VERSION"
         CHROMEDRIVER_VERSION=$(wget -q -O - https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+        echo "Downloading ChromeDriver version: $CHROMEDRIVER_VERSION"
         wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+        echo "Unzipping ChromeDriver..."
         unzip chromedriver_linux64.zip
+        echo "Setting permissions..."
         chmod +x chromedriver
+        echo "Moving ChromeDriver to /usr/local/bin/..."
         sudo mv chromedriver /usr/local/bin/
 
     - name: Run Selenide Tests
