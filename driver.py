@@ -2,7 +2,10 @@
 import allure
 from selene import by
 from selenium import webdriver
+from selenium.common import WebDriverException
 from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions
 
 
 class WebDriverWrapper:
@@ -18,6 +21,7 @@ class WebDriverWrapper:
         options.add_argument("--headless")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-setuid-sandbox")
+        options.add_argument("--window-size=1920x1080")
         self.chrome_driver = webdriver.Chrome(options=options, service=ChromeService())
 
     def disconnect(self):
@@ -49,7 +53,8 @@ class WebDriverWrapper:
     @staticmethod
     def split_loc(loc):
         """Split locator"""
-        str_by, str_value = loc.split('=', 1)
+        str_by = loc[:loc.find('=')]
+        str_value = loc[loc.find('=') + 1:]
         if str_by == "id":
             return by.id(str_value)
         elif str_by == "css":
@@ -91,5 +96,24 @@ class WebDriverWrapper:
         """Get an element attribute"""
         return self.get_element(loc).get_attribute(attr_name)
 
+    def wait_for_element_visible(self, loc, timeout):
+        wdw = WebDriverWait(self.chrome_driver, timeout, ignored_exceptions=[WebDriverException])
+        method, value = self.split_loc(loc)
+        return wdw.until(expected_conditions.visibility_of_element_located((method, value)),
+                         "Element '%s' not visible after '%s' seconds" % (loc, timeout))
+
+    def wait_for_element_present(self, loc, timeout):
+        wdw = WebDriverWait(self.chrome_driver,
+                            timeout,
+                            ignored_exceptions=[WebDriverException])
+        method, value = self.split_loc(loc)
+        return wdw.until(expected_conditions.presence_of_element_located((method, value)),
+                         "Element '%s' not found after '%s' seconds" % (loc, timeout))
+
+    def wait_for_element_not_present(self, loc, timeout):
+        wdw = WebDriverWait(self.chrome_driver, timeout, ignored_exceptions=[WebDriverException])
+        method, value = self.split_loc(loc)
+        return wdw.until(expected_conditions.invisibility_of_element((method, value)),
+                         "Element '%s' still present after '%s' seconds" % (loc, timeout))
 
 selen_id = WebDriverWrapper()

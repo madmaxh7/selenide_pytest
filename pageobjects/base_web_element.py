@@ -1,6 +1,6 @@
 import re
 
-from selene import be, browser
+from selene import be
 from selene.core.exceptions import TimeoutException
 from selenium.common import NoSuchElementException, ElementClickInterceptedException, StaleElementReferenceException, \
     ElementNotInteractableException, InvalidElementStateException
@@ -44,6 +44,8 @@ class BaseElement(BaseObject):
             try:
                 element = driver.selen_id.get_element(self.loc)
                 element.clear()
+                if element != '':
+                    element.clear()
             except InvalidElementStateException:
                 self.fail(f"Element {type(self).__name__} is not editable")
 
@@ -110,24 +112,24 @@ class BaseElement(BaseObject):
     def get_attribute_float_value(self, attr_name):
         return float(re.sub(r"[^\d.]", "", self.get_attribute(attr_name)))
 
-    def wait_for_visible(self):
+    def wait_for_visible(self, timeout=10):
         with allure.step(f"Wait for {type(self).__name__} visible"):
             try:
-                driver.selen_id.get_element(self.loc).wait_until(be.visible)
+                driver.selen_id.wait_for_element_visible(self.loc, timeout=timeout)
             except TimeoutException:
                 self.fail(f"Element {type(self).__name__} is not visible after timeout")
 
-    def wait_for_present(self):
+    def wait_for_present(self, timeout=10):
         with allure.step(f"Wait for {type(self).__name__} present"):
             try:
-                driver.selen_id.get_element(self.loc)
+                driver.selen_id.wait_for_element_present(self.loc, timeout=timeout)
             except TimeoutException:
                 self.fail(f"Element {type(self).__name__} is not present after timeout")
 
-    def wait_for_not_present(self):
+    def wait_for_not_present(self, timeout):
         with allure.step(f"Wait for {type(self).__name__} not present"):
             try:
-                driver.selen_id.get_element(self.loc).wait_until(be.not_.present)
+                driver.selen_id.wait_for_element_not_present(self.loc, timeout=timeout)
             except TimeoutException:
                 self.fail(f"Element {type(self).__name__} is still present after timeout")
 
