@@ -18,7 +18,7 @@ class WebDriverWrapper:
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-infobars")
         options.add_argument("--enable-automation")
-        # options.add_argument("--headless")
+        options.add_argument("--headless")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-setuid-sandbox")
         self.chrome_driver = webdriver.Chrome(options=options, service=ChromeService())
