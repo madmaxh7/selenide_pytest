@@ -30,12 +30,33 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt  # Assuming you have a requirements.txt file with Selenide and other dependencies
 
-    - name: Install ChromeDriver
+    - name: Check Installed ChromeDriver Version
+      id: check_chromedriver_version
       run: |
-        LATEST=$(wget -q -O - https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-        wget -q "https://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip"
+        INSTALLED_CHROMEDRIVER_VERSION=$(chromedriver --version | cut -d' ' -f2 | cut -d'.' -f1)
+        RECOMMENDED_CHROMEDRIVER_VERSION=$(google-chrome --version | cut -d' ' -f3 | cut -d'.' -f1)
+        if [ "$INSTALLED_CHROMEDRIVER_VERSION" == "$RECOMMENDED_CHROMEDRIVER_VERSION" ]; then
+          echo "ChromeDriver version is up to date. Skipping installation."
+          echo "::setOutput name=install_chromedriver::false"
+        else
+          echo "ChromeDriver version needs update. Proceeding with installation."
+          echo "::setOutput name=install_chromedriver::true"
+        fi
+
+    - name: Install ChromeDriver
+      if: steps.check_chromedriver_version.outputs.install_chromedriver == 'true'
+      run: |
+        echo "Downloading ChromeDriver..."
+        CHROME_VERSION=$(google-chrome --version | cut -d' ' -f3 | cut -d'.' -f1)
+        echo "Detected Chrome version: $CHROME_VERSION"
+        CHROMEDRIVER_VERSION=$(wget -q -O - https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+        echo "Downloading ChromeDriver version: $CHROMEDRIVER_VERSION"
+        wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+        echo "Unzipping ChromeDriver..."
         unzip chromedriver_linux64.zip
+        echo "Setting permissions..."
         chmod +x chromedriver
+        echo "Moving ChromeDriver to /usr/local/bin/..."
         sudo mv chromedriver /usr/local/bin/
 
     - name: Run Selenide Tests

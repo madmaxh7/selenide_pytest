@@ -1,5 +1,5 @@
 from pageobjects.base_web import BaseWebPage, BaseWebElement
-from pageobjects.web.home_page_en_element import HomePageEn
+from pageobjects.web.base_page_en_element import HomePageEn
 
 
 class LanguageSelect(BaseWebElement):
@@ -24,7 +24,7 @@ class StartPage(BaseWebPage):
     language_select = LanguageSelectPage()
 
     def select_en_language_sp(self):
-        self.language_select.select_en_language.wait_for_present()
+        self.language_select.select_en_language.wait_for_visible()
         self.language_select.select_en_language.click()
         try:
             from pageobjects.web.sc.bookings.bookings_page import SCBookingsPage

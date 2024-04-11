@@ -40,10 +40,10 @@ jobs:
         RECOMMENDED_CHROMEDRIVER_VERSION=$(google-chrome --version | cut -d' ' -f3 | cut -d'.' -f1)
         if [ "$INSTALLED_CHROMEDRIVER_VERSION" == "$RECOMMENDED_CHROMEDRIVER_VERSION" ]; then
           echo "ChromeDriver version is up to date. Skipping installation."
-          echo "::set-output name=install_chromedriver::false"
+          echo "::setOutput name=install_chromedriver::false"
         else
           echo "ChromeDriver version needs update. Proceeding with installation."
-          echo "::set-output name=install_chromedriver::true"
+          echo "::setOutput name=install_chromedriver::true"
         fi
 
     - name: Install ChromeDriver
