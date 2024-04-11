@@ -1,62 +1,50 @@
 """Webdriver"""
 import allure
-from selene import browser
 from selene import by
 from selenium import webdriver
-
-import configs
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 
 class WebDriverWrapper:
 
     def __init__(self):
-        self.browser = browser
-        self.driver = self.browser.config.driver
-
-    def connect(self):
-        """Starting WebDriver"""
-        if configs.web_driver_platform == 'chrome':
-            options = webdriver.ChromeOptions()
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-gpu")
-            options.add_argument("--disable-notifications")
-            options.add_argument("--disable-extensions")
-            options.add_argument("--disable-infobars")
-            options.add_argument("--enable-automation")
-            options.add_argument("--headless")
-            options.add_argument("--start-maximized")
-            options.add_argument('--window-size=1920x1080')
-            options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--disable-setuid-sandbox")
-        else:
-            self.driver.quit()
-            raise Exception("Unsupported webdriver platform %s" % configs.web_driver_platform)
+        options = webdriver.ChromeOptions()
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-notifications")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-infobars")
+        options.add_argument("--enable-automation")
+        options.add_argument("--headless")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-setuid-sandbox")
+        self.chrome_driver = webdriver.Chrome(options=options, service=ChromeService())
 
     def disconnect(self):
         """Stop WebDriver"""
-        self.driver.quit()
+        self.chrome_driver.quit()
 
     def open_url(self, url):
         """Open URL"""
-        self.browser.open(url)
+        self.chrome_driver.get(url)
 
     def refresh(self):
         """Refresh current page"""
-        self.driver.refresh()
+        self.chrome_driver.refresh()
 
     @allure.step("Execute script")
     def execute_script(self, script, *args):
         """Executes JavaScript in the current window/frame"""
-        return self.driver.execute_script(script, *args)
+        return self.chrome_driver.execute_script(script, *args)
 
     @property
     def window_size(self):
         """Gets the width and height of the current window."""
-        return self.driver.get_window_size()
+        return self.chrome_driver.get_window_size()
 
     def switch_to_frame(self, frame_loc):
         """Switches focus to the specified frame"""
-        self.driver.switch_to.frame(self.get_element(frame_loc))
+        self.chrome_driver.switch_to.frame(self.get_element(frame_loc))
 
     @staticmethod
     def split_loc(loc):
@@ -71,13 +59,13 @@ class WebDriverWrapper:
 
     def get_element(self, loc):
         """Find an element given a By strategy and locator"""
-        be_in, value = self.split_loc(loc)
-        return self.driver.find_element(be_in, value)
+        method, value = self.split_loc(loc)
+        return self.chrome_driver.find_element(method, value)
 
     def get_elements(self, loc):
         """Find an elements given a By strategy and locator"""
-        be_in, value = self.split_loc(loc)
-        return self.driver.find_elements(be_in, value)
+        method, value = self.split_loc(loc)
+        return self.chrome_driver.find_elements(method, value)
 
     def get_element_id(self, loc):
         """Get an element id"""

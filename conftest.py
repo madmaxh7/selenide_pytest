@@ -2,15 +2,12 @@
 Conftest file
 """
 import pytest
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 
-import driver
+import configs
+from pageobjects.web.start_page_element import StartPage
 
 
-@pytest.fixture(scope="function", autouse=False)
-def driver_init(request):
-    driver.selen_id.connect()
-
-    yield
-    driver.selen_id.disconnect()
+@pytest.fixture
+def open_home_page():
+    start_page = StartPage()
+    start_page.open_url(configs.base_url_web)
