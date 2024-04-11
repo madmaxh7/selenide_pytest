@@ -21,6 +21,7 @@ class WebDriverWrapper:
         options.add_argument("--headless")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-setuid-sandbox")
+        options.add_argument("--window-size=1920x1080")
         self.chrome_driver = webdriver.Chrome(options=options, service=ChromeService())
 
     def disconnect(self):

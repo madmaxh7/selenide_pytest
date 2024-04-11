@@ -1,6 +1,6 @@
 import re
 
-from selene import be, browser
+from selene import be
 from selene.core.exceptions import TimeoutException
 from selenium.common import NoSuchElementException, ElementClickInterceptedException, StaleElementReferenceException, \
     ElementNotInteractableException, InvalidElementStateException

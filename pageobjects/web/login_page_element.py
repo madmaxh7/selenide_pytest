@@ -1,6 +1,5 @@
 from pageobjects.base_web import BaseWebPage, BaseWebElement
 from pageobjects.web import constants
-from pageobjects.web.base_page_en_element import HomePageEn
 
 
 class UserNameField(BaseWebElement):

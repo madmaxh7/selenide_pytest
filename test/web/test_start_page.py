@@ -36,7 +36,8 @@ class TestStartPage(BasePage):
         search_text = constants.SEARCH_TEXT[0]
         title = list(search_text.keys())[0]
         description = search_text[title]
-        w_home_pg.search_field.send_keys(search_text.keys())
+        w_home_pg.search_field.wait_for_present()
+        w_home_pg.search_field.send_keys(title)
         w_home_pg.search_result(title).description().wait_for_present()
         w_home_pg.search_result(title).description().verify_text_is(description)
         w_home_pg.search_result(list((constants.SEARCH_TEXT[0]).keys())[0]).click()
