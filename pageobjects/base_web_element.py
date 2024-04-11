@@ -1,6 +1,6 @@
 import re
 
-from selene import be
+from selene import be, browser
 from selene.core.exceptions import TimeoutException
 from selenium.common import NoSuchElementException, ElementClickInterceptedException, StaleElementReferenceException, \
     ElementNotInteractableException, InvalidElementStateException
@@ -20,7 +20,7 @@ class BaseElement(BaseObject):
     def click(self):
         with allure.step(f"Click {type(self).__name__}"):
             try:
-                element = driver.selen_id.browser.element(css_or_xpath_or_by=self.loc)
+                element = driver.selen_id.get_element(self.loc)
                 element.click()
             except (NoSuchElementException, TimeoutException):
                 self.fail(f"Unable to find element {type(self).__name__}")
@@ -32,7 +32,7 @@ class BaseElement(BaseObject):
     def send_keys(self, value):
         with allure.step(f"Type '{value}' on element {type(self).__name__}"):
             try:
-                element = driver.selen_id.browser.element(css_or_xpath_or_by=self.loc)
+                element = driver.selen_id.get_element(self.loc)
                 element.send_keys(value)
             except NoSuchElementException:
                 self.fail(f"Unable to find element {type(self).__name__}")
@@ -42,7 +42,7 @@ class BaseElement(BaseObject):
     def clear(self):
         with allure.step(f"Clear {type(self).__name__}"):
             try:
-                element = driver.selen_id.browser.element(css_or_xpath_or_by=self.loc)
+                element = driver.selen_id.get_element(self.loc)
                 element.clear()
             except InvalidElementStateException:
                 self.fail(f"Element {type(self).__name__} is not editable")
@@ -50,13 +50,13 @@ class BaseElement(BaseObject):
     @property
     def text(self):
         try:
-            return driver.selen_id.browser.element(css_or_xpath_or_by=self.loc)().text
+            return driver.selen_id.get_element(self.loc).text
         except NoSuchElementException:
             self.fail(f"Unable to find element {type(self).__name__}")
         except StaleElementReferenceException:
             time.sleep(0.3)
             try:
-                return driver.selen_id.browser.element(css_or_xpath_or_by=self.loc)().text
+                return driver.selen_id.get_element(self.loc).text
             except NoSuchElementException:
                 self.fail(f"Unable to find element {type(self).__name__}")
 
@@ -66,14 +66,14 @@ class BaseElement(BaseObject):
         returns dictionary with keys: 'x', 'y', 'height', 'width'
         """
         try:
-            return driver.selen_id.browser.element(css_or_xpath_or_by=self.loc)().rect
+            return driver.selen_id.get_element(self.loc).rect
         except NoSuchElementException:
             self.fail(f"Unable to find element {type(self).__name__}")
 
     @property
     def present(self):
         try:
-            driver.selen_id.browser.element(css_or_xpath_or_by=self.loc).should(be.present)
+            driver.selen_id.get_element(self.loc).should(be.present)
             return True
         except Exception:
             return False
@@ -81,28 +81,28 @@ class BaseElement(BaseObject):
     @property
     def visible(self):
         try:
-            return driver.selen_id.browser.element(css_or_xpath_or_by=self.loc).should(be.visible)
+            return driver.selen_id.get_element(self.loc).should(be.visible)
         except Exception:
             return False
 
     @property
     def id(self):
-        return driver.selen_id.browser.element(css_or_xpath_or_by=self.loc)().get_attribute('id')
+        return driver.selen_id.get_element(self.loc).get_attribute('id')
 
     def get_attribute(self, attr_name):
         try:
-            return driver.selen_id.browser.element(css_or_xpath_or_by=self.loc)().get_attribute(attr_name)
+            return driver.selen_id.get_element(self.loc).get_attribute(attr_name)
         except NoSuchElementException:
             self.fail(f"Unable to find element {type(self).__name__}")
         except StaleElementReferenceException as e:
             try:
                 time.sleep(0.1)
-                return driver.selen_id.browser.element(css_or_xpath_or_by=self.loc)().get_attribute(attr_name)
+                return driver.selen_id.get_element(self.loc).get_attribute(attr_name)
             except NoSuchElementException:
                 self.fail(f"Unable to find element {type(self).__name__} {e} ")
 
     def get_screenshot(self):
-        return driver.selen_id.browser.element(css_or_xpath_or_by=self.loc)().screenshot_as_png
+        return driver.selen_id.get_element(self.loc).screenshot_as_png
 
     def get_float_value(self):
         return float(re.sub(r"[^\d.]", "", self.text))
@@ -113,21 +113,21 @@ class BaseElement(BaseObject):
     def wait_for_visible(self):
         with allure.step(f"Wait for {type(self).__name__} visible"):
             try:
-                driver.selen_id.browser.element(css_or_xpath_or_by=self.loc).wait_until(be.visible)
+                driver.selen_id.get_element(self.loc).wait_until(be.visible)
             except TimeoutException:
                 self.fail(f"Element {type(self).__name__} is not visible after timeout")
 
     def wait_for_present(self):
         with allure.step(f"Wait for {type(self).__name__} present"):
             try:
-                driver.selen_id.browser.element(css_or_xpath_or_by=self.loc).wait_until(be.present)
+                driver.selen_id.get_element(self.loc)
             except TimeoutException:
                 self.fail(f"Element {type(self).__name__} is not present after timeout")
 
     def wait_for_not_present(self):
         with allure.step(f"Wait for {type(self).__name__} not present"):
             try:
-                driver.selen_id.browser.element(css_or_xpath_or_by=self.loc).wait_until(be.not_.present)
+                driver.selen_id.get_element(self.loc).wait_until(be.not_.present)
             except TimeoutException:
                 self.fail(f"Element {type(self).__name__} is still present after timeout")
 

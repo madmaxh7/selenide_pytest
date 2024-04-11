@@ -30,7 +30,21 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Check Installed ChromeDriver Version
+      id: check_chromedriver_version
+      run: |
+        INSTALLED_CHROMEDRIVER_VERSION=$(chromedriver --version | cut -d' ' -f2 | cut -d'.' -f1)
+        RECOMMENDED_CHROMEDRIVER_VERSION=$(google-chrome --version | cut -d' ' -f3 | cut -d'.' -f1)
+        if [ "$INSTALLED_CHROMEDRIVER_VERSION" == "$RECOMMENDED_CHROMEDRIVER_VERSION" ]; then
+          echo "ChromeDriver version is up to date. Skipping installation."
+          echo "::set-output name=install_chromedriver::false"
+        else
+          echo "ChromeDriver version needs update. Proceeding with installation."
+          echo "::set-output name=install_chromedriver::true"
+        fi
+
     - name: Install ChromeDriver
+      if: steps.check_chromedriver_version.outputs.install_chromedriver == 'true'
       run: |
         echo "Downloading ChromeDriver..."
         CHROME_VERSION=$(google-chrome --version | cut -d' ' -f3 | cut -d'.' -f1)

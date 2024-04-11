@@ -5,7 +5,7 @@ from pageobjects.web.home_page_en_element import HomePageEn
 from pageobjects.web.login_page_element import LoginPage
 from pageobjects.web.start_page_element import StartPage
 
-pytestmark = [pytest.mark.usefixtures("driver_init", "open_home_page")]
+pytestmark = [pytest.mark.usefixtures("open_home_page")]
 
 
 class TestStartPage(BasePage):
