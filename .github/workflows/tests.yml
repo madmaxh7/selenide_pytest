@@ -1,4 +1,4 @@
-name: Selenide Tests
+name: Nightly
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   test:
-    name: Run Selenide Tests
+    name: Nightly Run Selenide Tests
     runs-on: ubuntu-latest
 
     strategy:
